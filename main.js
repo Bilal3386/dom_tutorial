@@ -130,11 +130,18 @@
 let form =  document.getElementById('addForm')
 let itemList = document.getElementById('items')
 
+                        /* Filtering Functionality */
+let filter = document.getElementById('filter')
+
 // form submit event 
 form.addEventListener('submit', addItem)
 
 // Delete event
 itemList.addEventListener('click', removeItem)
+
+// filter event 
+
+filter.addEventListener('keyup', filterItems)
 
 // Add Item
 function addItem(e) {
@@ -142,15 +149,27 @@ function addItem(e) {
     
     // Get input Value
     let newItem = document.getElementById('item')
-
-    //  Create new li element
+    let newDescription = document.getElementById('description')
+    
+    // edge case 
+    if(newItem.value === '' && newDescription.value === '')
+     {
+        alert('Please enter value for both field')
+     }
+     else 
+     {
+         //  Create new li element
     let li  = document.createElement('li')
+    let span = document.createElement('span')
+    
     // add class
     li.className = 'list-group-item'
 
+    span.className = 'list-group-item mt-3 p-0 description'
+    span.style = "border: none; color:gray"
     //Add textNode with Input Value 
     li.appendChild(document.createTextNode(newItem.value))
-    
+
     // create delete element button
     let deleteBtn = document.createElement('button')
     // add class
@@ -173,7 +192,12 @@ function addItem(e) {
     li.appendChild(editBtn)
 
     // Append li to list
+    span.appendChild(document.createTextNode(newDescription.value))
+    li.appendChild(span)
     itemList.appendChild(li)
+    //itemList.appendChild(span)
+     }
+   
 }
 
 
@@ -187,4 +211,29 @@ function removeItem (e) {
             itemList.removeChild(li)
         }
     }
+}
+
+
+// filter Items
+function filterItems(e)
+{
+    // convert to lower case
+    let text = e.target.value.toLowerCase()
+    // get list
+    let items = itemList.getElementsByTagName('li')
+    
+    // Convert to an array
+    Array.from(items).forEach(item => {
+        let itemsName = item.firstChild.textContent
+        let description = item.lastChild.textContent
+        //console.log(description);
+        if(itemsName.toLocaleLowerCase().indexOf(text) !== -1 || description.toLocaleLowerCase().indexOf(text) !== -1)
+        {
+            item.style.display = 'block'
+        }
+        else
+        {
+            item.style.display = 'none'
+        }
+    })
 }
